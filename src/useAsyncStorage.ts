@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 
 const useAsyncStorage = <T>(
   key: string,
@@ -12,7 +12,7 @@ const useAsyncStorage = <T>(
   const { hydrated, storageValue } = state;
 
   async function pullFromStorage() {
-    const fromStorage = await AsyncStorage.getItem(key);
+    const fromStorage = await SecureStore.getItemAsync(key);
     let value = defaultValue;
     if (fromStorage) {
       value = JSON.parse(fromStorage);
@@ -23,7 +23,7 @@ const useAsyncStorage = <T>(
   async function updateStorage(newValue: T) {
     setState({ hydrated: true, storageValue: newValue });
     const stringifiedValue = JSON.stringify(newValue);
-    await AsyncStorage.setItem(key, stringifiedValue);
+    await SecureStore.setItemAsync(key, stringifiedValue);
   }
 
   useEffect(() => {
